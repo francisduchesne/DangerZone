@@ -26,8 +26,11 @@ MixerPage::MixerPage (DangerZoneAudioProcessor& processorIn)
 
     styleSlider (masterLevel);
     addAndMakeVisible (masterLevel);
+    const auto insertTip = juce::String ("FVS insert. Menu is a stub; the exact Single list is TBD.");
     fillChoices (masterIns1, processor.getApvts(), "masterIns1");
     fillChoices (masterIns2, processor.getApvts(), "masterIns2");
+    masterIns1.setTooltip (insertTip);
+    masterIns2.setTooltip (insertTip);
     addAndMakeVisible (masterIns1);
     addAndMakeVisible (masterIns2);
     addAndMakeVisible (masterBypass1);
@@ -48,8 +51,12 @@ MixerPage::MixerPage (DangerZoneAudioProcessor& processorIn)
         styleSlider (strip->pan);
         styleSlider (strip->aux1);
         styleSlider (strip->aux2);
+        strip->aux1.setTooltip ("Aux 1 send. Pre-filled destination: Mover (delay).");
+        strip->aux2.setTooltip ("Aux 2 send. Pre-filled destination: Spatializer, two reverb engines.");
         fillChoices (strip->ins1, apvts, voiceParam (voice, "ins1"));
         fillChoices (strip->ins2, apvts, voiceParam (voice, "ins2"));
+        strip->ins1.setTooltip (insertTip);
+        strip->ins2.setTooltip (insertTip);
         content.addAndMakeVisible (strip);
 
         strip->aLevel = std::make_unique<Strip::SliderAttachment> (apvts, voiceParam (voice, "level"), strip->level);

@@ -3,9 +3,10 @@
 namespace dz
 {
 
-// Insert-slot ids. These name Arcades / Fashion Victim modules.
-// Danger Zone does not link or host FVS_Host. See FvsInsert for the stub DSP
-// and docs/MIXER.md for which ids are fixed aux destinations.
+// Provisional insert-picker ids. The exact Fashion Victim Single menu is TBD.
+// These names keep the slot a real APVTS choice until that menu is locked.
+// Danger Zone does not link or host FVS_Host. Aux 1 is Mover and Aux 2 is
+// Spatializer (two reverb engines) in FxChain — see docs/MIXER.md.
 enum class FvsModule : int
 {
     none = 0,

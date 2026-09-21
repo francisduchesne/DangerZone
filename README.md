@@ -2,7 +2,7 @@
 
 Arcade-branded LinnDrum-style drum instrument by Arcades. VST3 and Standalone. Not an FVS_Host module.
 
-Fashion Victim processing is named in the mixer (insert slots, Mover on aux 1, two-engine Spatializer on aux 2) and implemented as stubs. The graph and the parameters are real. See [docs/MIXER.md](docs/MIXER.md), [docs/PRODUCT_BRIEF.md](docs/PRODUCT_BRIEF.md), and [docs/LINNDRUM_RESEARCH.md](docs/LINNDRUM_RESEARCH.md).
+Each LinnDrum voice is a channel strip: fader, pan, two FVS insert slots (picker stubbed; exact menu TBD), and two aux sends pre-filled to Mover (delay) and Spatializer (two reverb engines). The master bus has two insert slots. FVS DSP is stubbed. The graph and the parameters are real. See [docs/MIXER.md](docs/MIXER.md), [docs/PRODUCT_BRIEF.md](docs/PRODUCT_BRIEF.md), and [docs/LINNDRUM_RESEARCH.md](docs/LINNDRUM_RESEARCH.md).
 
 ## Identity
 

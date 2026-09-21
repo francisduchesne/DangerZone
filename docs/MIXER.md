@@ -1,6 +1,21 @@
 # Danger Zone mixer graph
 
-The mixer is a real signal path with real APVTS parameters. Fashion Victim module *bodies* are stubs. The instrument does not link `FVS_Host`.
+Francis's mixer, as built in this scaffold. Every control below is a real APVTS parameter and a real point in the audio graph. Fashion Victim module bodies are stubs, so the strip can host FVS modules later without a new topology. This instrument does not link `FVS_Host`.
+
+## Product decision
+
+Every LinnDrum pad has its own channel strip:
+
+- Fader
+- Pan
+- **2 insert slots.** Each slot chooses a Fashion Victim Single effect. The exact menu is still TBD, so the picker is a stub (None plus a provisional list of Single names).
+- **2 aux sends**, pre-filled:
+  - Aux 1 → **Mover** (delay)
+  - Aux 2 → **Spatializer** (reverb). Spatializer has **two reverb engines**, both on this aux return.
+
+The **master bus** has FVS insert access, starting with **2 insert slots** and the same stub picker.
+
+Mythical / era voices use this same strip, so they do not grow a second mixer later. Send levels start at zero. What is pre-filled is the destination, not the send amount: raising Aux 1 always feeds Mover, raising Aux 2 always feeds both Spatializer engines.
 
 ## Flow
 
@@ -8,7 +23,7 @@ The mixer is a real signal path with real APVTS parameters. Fashion Victim modul
 Voice engine (one-shot multi-sample)
         |
         v
- Insert slot 1 ---- FVS picker (None or a named module) + bypass + amount
+ Insert slot 1 ---- stub FVS picker (exact menu TBD) + bypass + amount
         |
         v
  Insert slot 2 ---- same picker
@@ -50,12 +65,12 @@ Mute and solo sit on the strip, before the dry sum and before both sends. Solo i
 
 | Point | Choice | Default |
 | --- | --- | --- |
-| Voice insert 1 and 2 | Picker: None, Equalizer, Amplifier, Shifter, Widener, Pusher, Toughener, Mover, Spatializer | None |
-| Master insert 1 and 2 | Same picker | None |
-| Aux 1 destination | Fixed. Always the Mover delay | send 0, return 0.55, 180 ms |
-| Aux 2 destination | Fixed. Always the Spatializer | send 0, both engines mixed by their levels |
+| Voice insert 1 and 2 | Stub picker. Provisional names: None, Equalizer, Amplifier, Shifter, Widener, Pusher, Toughener, Mover, Spatializer. Exact FVS menu TBD | None |
+| Master insert 1 and 2 | Same stub picker | None |
+| Aux 1 | Pre-filled destination: Mover delay. Send is a level, not a second picker | send 0, return 0.55, 180 ms |
+| Aux 2 | Pre-filled destination: Spatializer. Two reverb engines on the return | send 0; engine A and engine B each have size and level; return 0.55 |
 
-Aux destinations are not pickers. Turning up `aux1` always hits Mover. Turning up `aux2` always hits Spatializer.
+The provisional insert names exist so the choice parameter and the hosting switch (`FvsModule`) are real. Replacing that list later is a menu change, not a new strip. Aux 1 and Aux 2 stay wired to Mover and Spatializer in this scaffold.
 
 ## Two different "Mover" / "Spatializer" paths
 
@@ -94,6 +109,7 @@ Insert amount `0` is a bypass even if a module is selected. The stub DSP starts 
 
 ## TODO
 
-- Replace `processSlot` with the real Fashion Victim module for the picked id. Keep the parameter ids.
-- Replace `FxChain::processMover` and `processSpatializer` with real FVS Mover and FVS Spatializer. Keep two reverb engines on the Spatializer return.
-- Do not turn Danger Zone into an `FVS_Host` module to do that. Host the DSP behind `FvsModule` / `FxChain`, or load the module as a library, without pulling the Single-host shell into this instrument.
+- Lock the insert menu to the real Fashion Victim Single list when that list is chosen. Keep two slots per Linn voice and two slots on the master.
+- Replace `processSlot` with the real FVS module for the picked id. Keep the parameter ids.
+- Replace `FxChain::processMover` and `processSpatializer` with real FVS Mover and FVS Spatializer. Keep two reverb engines on the Aux 2 return.
+- Host that DSP behind `FvsModule` / `FxChain` (or a library load). Leave the Single-host shell out of this instrument.
