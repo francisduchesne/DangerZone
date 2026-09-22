@@ -11,6 +11,8 @@ namespace dz
 // TODO(fvs): replace processSlot with the real Fashion Victim module that
 // matches FvsModule. Do not link FVS_Host into this instrument. The picker
 // id and the amount/bypass params stay; only the DSP body changes.
+// The editor for a loaded slot is the in-editor module panel (docs/FVS_HOSTING.md),
+// not an OS plugin window and not the FVS Host I/O chrome.
 //
 // "Mover" and "Spatializer" chosen here are short insert stubs. The aux
 // Mover delay and the two-engine Spatializer live in FxChain, not in this slot.

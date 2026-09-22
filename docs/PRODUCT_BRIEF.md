@@ -33,7 +33,7 @@ Placeholder WAVs in `Resources/Samples/` are procedural stand-ins so the engine 
 Every LinnDrum pad has a channel strip. Mythical slots use the same strip.
 
 - Fader and pan (plus mute and solo on the scaffold strip).
-- Two insert slots. Each one can select any Fashion Victim Single effect. The exact menu is TBD, so the picker is stubbed with a provisional list (see [MIXER.md](MIXER.md)).
+- Two insert slots. Each one can select any Fashion Victim Single effect. The exact menu is TBD, so the picker is stubbed with a provisional list (see [MIXER.md](MIXER.md)). Open shows the module face in a floating panel inside this editor. The FVS Host input and output strips stay out. See [FVS_HOSTING.md](FVS_HOSTING.md).
 - Two aux sends, pre-filled: Aux 1 is Mover (delay). Aux 2 is Spatializer (reverb) with two reverb engines on that return.
 - The master bus has two FVS insert slots, same stub picker.
 

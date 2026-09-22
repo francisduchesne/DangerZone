@@ -8,7 +8,7 @@ Every LinnDrum pad has its own channel strip:
 
 - Fader
 - Pan
-- **2 insert slots.** Each slot chooses a Fashion Victim Single effect. The exact menu is still TBD, so the picker is a stub (None plus a provisional list of Single names).
+- **2 insert slots.** Each slot chooses a Fashion Victim Single effect. The exact menu is still TBD, so the picker is a stub (None plus a provisional list of Single names). **Open** shows that module inside the Danger Zone editor (module face only). See [FVS_HOSTING.md](FVS_HOSTING.md).
 - **2 aux sends**, pre-filled:
   - Aux 1 → **Mover** (delay)
   - Aux 2 → **Spatializer** (reverb). Spatializer has **two reverb engines**, both on this aux return.
@@ -96,20 +96,22 @@ Master and aux engines:
 - `moverTimeMs`, `moverFeedback`, `moverReturn`
 - `spatSizeA`, `spatSizeB`, `spatLevelA`, `spatLevelB`, `spatReturn`
 
-Insert amount `0` is a bypass even if a module is selected. The stub DSP starts to colour the signal as amount rises. Bypass forces a passthrough.
+Insert amount `0` is a bypass even if a module is selected. The stub DSP starts to colour the signal as amount rises. Bypass forces a passthrough. Choosing None unloads the insert. Closing its editor panel does not.
 
 ## Where it lives
 
 - `Source/Mixer.cpp` — fader, pan, mute, solo, send gains
 - `Source/FvsInsert.cpp` — insert-slot stub DSP and the hosting boundary
+- `Source/Ui/ModuleDoor.cpp` — in-editor module panel (no host I/O chrome)
 - `Source/FxChain.cpp` — aux Mover and the two-engine Spatializer
 - `Source/PluginProcessor.cpp` — the graph order above
-- Mixer tab — one strip for every LinnDrum pad and every Mythical voice: fader, pan, tune, mute, solo, two inserts (picker, bypass, amount), Aux 1 and Aux 2. Master level plus two master inserts (picker, bypass, amount) sit above the list. Tune and insert amount used to be a single selected-voice control on the FX page, and master insert amount had no slider. They are on this tab now, one binding per parameter.
+- Mixer tab — one strip for every LinnDrum pad and every Mythical voice: fader, pan, tune, mute, solo, two inserts (picker, Open, bypass, amount), Aux 1 and Aux 2. Master level plus two master inserts (picker, Open, bypass, amount) sit above the list. Tune and insert amount used to be a single selected-voice control on the FX page, and master insert amount had no slider. They are on this tab now, one binding per parameter. Open is the little door in [FVS_HOSTING.md](FVS_HOSTING.md).
 - FX tab — Mover (time, feedback, return), both Spatializer engines, return, and jitter
 
 ## TODO
 
 - Lock the insert menu to the real Fashion Victim Single list when that list is chosen. Keep two slots per Linn voice and two slots on the master.
 - Replace `processSlot` with the real FVS module for the picked id. Keep the parameter ids.
+- Replace the stub module face with `createModuleEditor()` from the Single (module UI only). Until that exists, keep the hole-sized viewport in [FVS_HOSTING.md](FVS_HOSTING.md).
 - Replace `FxChain::processMover` and `processSpatializer` with real FVS Mover and FVS Spatializer. Keep two reverb engines on the Aux 2 return.
 - Host that DSP behind `FvsModule` / `FxChain` (or a library load). Leave the Single-host shell out of this instrument.

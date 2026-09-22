@@ -22,6 +22,7 @@ public:
     static constexpr int kTuneW = 108;
     static constexpr int kToggleW = 34;
     static constexpr int kComboW = 116;
+    static constexpr int kOpenW = 48;
     static constexpr int kBypassW = 30;
     static constexpr int kAmountW = 104;
     static constexpr int kAuxW = 128;
@@ -32,7 +33,7 @@ public:
     static int stripWidth()
     {
         const int top = kNameW + kLevelW + kPanW + kTuneW + kToggleW + kToggleW;
-        const int bottom = kNameW + kComboW + kBypassW + kAmountW + kComboW + kBypassW + kAmountW + kAuxW + kAuxW;
+        const int bottom = kNameW + (kComboW + kOpenW + kBypassW + kAmountW) * 2 + kAuxW + kAuxW;
         return juce::jmax (top, bottom);
     }
 
@@ -45,6 +46,7 @@ private:
         juce::Label name;
         juce::Slider level, pan, tune, aux1, aux2, amt1, amt2;
         juce::ComboBox ins1, ins2;
+        juce::TextButton open1, open2;
         juce::ToggleButton bypass1 { "B" }, bypass2 { "B" }, mute { "M" }, solo { "S" };
 
         using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
@@ -66,9 +68,11 @@ private:
         juce::Label mute { {}, "M" };
         juce::Label solo { {}, "S" };
         juce::Label ins1 { {}, "Insert 1" };
+        juce::Label open1 { {}, "Open" };
         juce::Label bypass1 { {}, "B" };
         juce::Label amt1 { {}, "Amount" };
         juce::Label ins2 { {}, "Insert 2" };
+        juce::Label open2 { {}, "Open" };
         juce::Label bypass2 { {}, "B" };
         juce::Label amt2 { {}, "Amount" };
         juce::Label aux1 { {}, "Aux 1 Mover" };
@@ -85,6 +89,7 @@ private:
     juce::Label masterLabel { {}, "Master" };
     juce::Slider masterLevel, masterAmt1, masterAmt2;
     juce::ComboBox masterIns1, masterIns2;
+    juce::TextButton masterOpen1, masterOpen2;
     juce::ToggleButton masterBypass1 { "B" }, masterBypass2 { "B" };
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> aMaster, aMasterAmt1, aMasterAmt2;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> aMasterIns1, aMasterIns2;

@@ -49,6 +49,7 @@ target_sources(DangerZone
         Source/Ui/PadPage.cpp
         Source/Ui/SequencerPage.cpp
         Source/Ui/MixerPage.cpp
+        Source/Ui/ModuleDoor.cpp
         Source/Ui/FxPage.cpp
         Source/Ui/PresetsPage.cpp
 )

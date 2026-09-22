@@ -2,7 +2,7 @@
 
 Arcade-branded LinnDrum-style drum instrument by Arcades. VST3 and Standalone. Not an FVS_Host module.
 
-Each LinnDrum voice is a channel strip: fader, pan, two FVS insert slots (picker stubbed; exact menu TBD), and two aux sends pre-filled to Mover (delay) and Spatializer (two reverb engines). The master bus has two insert slots. FVS DSP is stubbed. The graph and the parameters are real. See [docs/MIXER.md](docs/MIXER.md), [docs/PRODUCT_BRIEF.md](docs/PRODUCT_BRIEF.md), and [docs/LINNDRUM_RESEARCH.md](docs/LINNDRUM_RESEARCH.md).
+Each LinnDrum voice is a channel strip: fader, pan, two FVS insert slots (picker stubbed; exact menu TBD), and two aux sends pre-filled to Mover (delay) and Spatializer (two reverb engines). The master bus has two insert slots. FVS DSP is stubbed. Opening an insert shows the module face inside this editor, not a second plugin window. The graph and the parameters are real. See [docs/MIXER.md](docs/MIXER.md), [docs/FVS_HOSTING.md](docs/FVS_HOSTING.md), [docs/PRODUCT_BRIEF.md](docs/PRODUCT_BRIEF.md), and [docs/LINNDRUM_RESEARCH.md](docs/LINNDRUM_RESEARCH.md).
 
 ## Identity
 
@@ -62,7 +62,7 @@ Round-robin is the default (`variantMode`). Random is the other choice. Either w
 1. Open the Standalone, or load the VST3.
 2. Press **Play** on the Sequencer page. Stock Linn is a dry pattern: kick on the beat, snare on the backbeat, closed hat on the 8ths.
 3. Pads on Linn audition a voice. Mythical pads stay quiet until those folders have WAVs.
-4. Mixer: one strip per Linn and Mythical voice — fader, pan, tune, mute, solo, two inserts (picker, bypass, amount), Aux 1 (Mover) and Aux 2 (Spatializer). Master level and two master inserts are on the same page.
+4. Mixer: one strip per Linn and Mythical voice — fader, pan, tune, mute, solo, two inserts (picker, Open, bypass, amount), Aux 1 (Mover) and Aux 2 (Spatializer). Master level and two master inserts are on the same page. Open shows that module's face in a panel you can drag and close. Closing the panel leaves the insert loaded. None unloads it.
 5. FX: Mover time / feedback / return, and Spatializer engine A and engine B.
 6. Presets: **Stock Linn**, **Processed**, and Save user preset.
 
@@ -77,6 +77,7 @@ Source/VoiceEngine.*        multi-sample playback
 Source/Sequencer.*          16-step grid
 Source/Mixer.*              fader / pan / mute / solo / send gains
 Source/FvsInsert.*          insert-slot stubs (hosting boundary)
+Source/Ui/ModuleDoor.*      in-editor module panel (no host I/O)
 Source/FxChain.*            aux Mover + two-engine Spatializer
 Source/PresetManager.*      Stock Linn, Processed, user XML
 Source/MidiClockSync.h      clock hook, not yet followed
@@ -87,7 +88,7 @@ Source/Ui/                  Linn, Mythical, Sequencer, Mixer, FX, Presets
 
 - Real multi-samples of the orange/black Linn. About six variants per hit. Snare pitch layers. Placeholder WAVs are only here so the engine has something to play.
 - Mythical / era takes in the empty slots.
-- Replace `FvsInsert::processSlot` and `FxChain` with real Fashion Victim DSP. Do not depend on FVS_Host. Keep the parameter ids in [docs/MIXER.md](docs/MIXER.md).
+- Replace `FvsInsert::processSlot` and `FxChain` with real Fashion Victim DSP. Do not depend on FVS_Host. Keep the parameter ids in [docs/MIXER.md](docs/MIXER.md). Module UI wants `createModuleEditor()` with no I/O chrome — see [docs/FVS_HOSTING.md](docs/FVS_HOSTING.md).
 - MIDI clock follow when `midiClockSync` is enabled. Host playhead follow after that.
 - Orange/black retro-wave LookAndFeel. No custom art in this scaffold.
 - Measure Linn shuffle A–F if a single swing percent is not enough.

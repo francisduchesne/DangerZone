@@ -8,7 +8,8 @@
 
 DangerZoneAudioProcessorEditor::DangerZoneAudioProcessorEditor (DangerZoneAudioProcessor& processorIn)
     : juce::AudioProcessorEditor (&processorIn),
-      processor (processorIn)
+      processor (processorIn),
+      moduleDoors (processorIn.getApvts())
 {
     auto stock = juce::Colours::transparentBlack;
     tabs.addTab ("Linn", stock, new dz::PadPage (processor, dz::Bank::linn), true);
@@ -23,6 +24,7 @@ DangerZoneAudioProcessorEditor::DangerZoneAudioProcessorEditor (DangerZoneAudioP
 
     footer.setJustificationType (juce::Justification::centredLeft);
     addAndMakeVisible (footer);
+    addAndMakeVisible (moduleDoors);
 
     setSize (1180, 780);
     setResizable (true, true);
@@ -40,6 +42,12 @@ void DangerZoneAudioProcessorEditor::resized()
     auto area = getLocalBounds();
     footer.setBounds (area.removeFromBottom (22).reduced (8, 2));
     tabs.setBounds (area);
+    moduleDoors.setBounds (area);
+}
+
+void DangerZoneAudioProcessorEditor::openInsertDoor (int voice, int slot)
+{
+    moduleDoors.open (voice, slot);
 }
 
 void DangerZoneAudioProcessorEditor::timerCallback()

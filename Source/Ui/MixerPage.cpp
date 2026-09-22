@@ -1,4 +1,5 @@
 #include "MixerPage.h"
+#include "PluginEditor.h"
 
 namespace dz
 {
@@ -15,10 +16,21 @@ void MixerPage::fillChoices (juce::ComboBox& box, juce::AudioProcessorValueTreeS
         box.addItemList (param->getAllValueStrings(), 1);
 }
 
+static void wireOpen (juce::Button& button, int voice, int slot)
+{
+    button.setButtonText ("Open");
+    button.setTooltip ("Open the module panel in this editor. None does not open a panel. Closing the panel keeps the insert loaded.");
+    button.onClick = [&button, voice, slot]
+    {
+        if (auto* editor = button.findParentComponentOfClass<DangerZoneAudioProcessorEditor>())
+            editor->openInsertDoor (voice, slot);
+    };
+}
+
 MixerPage::Columns::Columns()
 {
-    for (auto* label : { &level, &pan, &tune, &mute, &solo, &ins1, &bypass1, &amt1,
-                         &ins2, &bypass2, &amt2, &aux1, &aux2 })
+    for (auto* label : { &level, &pan, &tune, &mute, &solo, &ins1, &open1, &bypass1, &amt1,
+                         &ins2, &open2, &bypass2, &amt2, &aux1, &aux2 })
     {
         label->setJustificationType (juce::Justification::centredLeft);
         addAndMakeVisible (*label);
@@ -39,9 +51,11 @@ void MixerPage::Columns::resized()
     auto bottom = area.removeFromTop (kLineH);
     bottom.removeFromLeft (kNameW);
     ins1.setBounds (bottom.removeFromLeft (kComboW).reduced (2, 0));
+    open1.setBounds (bottom.removeFromLeft (kOpenW).reduced (2, 0));
     bypass1.setBounds (bottom.removeFromLeft (kBypassW).reduced (1, 0));
     amt1.setBounds (bottom.removeFromLeft (kAmountW).reduced (2, 0));
     ins2.setBounds (bottom.removeFromLeft (kComboW).reduced (2, 0));
+    open2.setBounds (bottom.removeFromLeft (kOpenW).reduced (2, 0));
     bypass2.setBounds (bottom.removeFromLeft (kBypassW).reduced (1, 0));
     amt2.setBounds (bottom.removeFromLeft (kAmountW).reduced (2, 0));
     aux1.setBounds (bottom.removeFromLeft (kAuxW).reduced (2, 0));
@@ -68,9 +82,11 @@ void MixerPage::Strip::resized()
     auto bottom = area.removeFromTop (kLineH);
     bottom.removeFromLeft (kNameW);
     ins1.setBounds (bottom.removeFromLeft (kComboW).reduced (2, 3));
+    open1.setBounds (bottom.removeFromLeft (kOpenW).reduced (2, 3));
     bypass1.setBounds (bottom.removeFromLeft (kBypassW).reduced (2, 3));
     amt1.setBounds (bottom.removeFromLeft (kAmountW).reduced (1, 1));
     ins2.setBounds (bottom.removeFromLeft (kComboW).reduced (2, 3));
+    open2.setBounds (bottom.removeFromLeft (kOpenW).reduced (2, 3));
     bypass2.setBounds (bottom.removeFromLeft (kBypassW).reduced (2, 3));
     amt2.setBounds (bottom.removeFromLeft (kAmountW).reduced (1, 1));
     aux1.setBounds (bottom.removeFromLeft (kAuxW).reduced (1, 1));
@@ -80,7 +96,7 @@ void MixerPage::Strip::resized()
 MixerPage::MixerPage (DangerZoneAudioProcessor& processorIn)
     : processor (processorIn)
 {
-    const auto insertTip = juce::String ("FVS insert. Menu is a stub; the exact Single list is TBD.");
+    const auto insertTip = juce::String ("FVS insert. Menu is a stub. Open shows only the module face inside this editor.");
     auto& apvts = processor.getApvts();
 
     addAndMakeVisible (masterLabel);
@@ -94,13 +110,17 @@ MixerPage::MixerPage (DangerZoneAudioProcessor& processorIn)
     fillChoices (masterIns2, apvts, "masterIns2");
     masterIns1.setTooltip (insertTip);
     masterIns2.setTooltip (insertTip);
+    wireOpen (masterOpen1, -1, 0);
+    wireOpen (masterOpen2, -1, 1);
     masterBypass1.setTooltip ("Bypass master insert 1");
     masterBypass2.setTooltip ("Bypass master insert 2");
     addAndMakeVisible (masterLevel);
     addAndMakeVisible (masterIns1);
+    addAndMakeVisible (masterOpen1);
     addAndMakeVisible (masterBypass1);
     addAndMakeVisible (masterAmt1);
     addAndMakeVisible (masterIns2);
+    addAndMakeVisible (masterOpen2);
     addAndMakeVisible (masterBypass2);
     addAndMakeVisible (masterAmt2);
 
@@ -147,6 +167,25 @@ MixerPage::MixerPage (DangerZoneAudioProcessor& processorIn)
         fillChoices (strip->ins2, apvts, voiceParam (voice, "ins2"));
         strip->ins1.setTooltip (insertTip);
         strip->ins2.setTooltip (insertTip);
+        wireOpen (strip->open1, voice, 0);
+        wireOpen (strip->open2, voice, 1);
+
+        strip->addAndMakeVisible (strip->name);
+        strip->addAndMakeVisible (strip->level);
+        strip->addAndMakeVisible (strip->pan);
+        strip->addAndMakeVisible (strip->tune);
+        strip->addAndMakeVisible (strip->mute);
+        strip->addAndMakeVisible (strip->solo);
+        strip->addAndMakeVisible (strip->ins1);
+        strip->addAndMakeVisible (strip->open1);
+        strip->addAndMakeVisible (strip->bypass1);
+        strip->addAndMakeVisible (strip->amt1);
+        strip->addAndMakeVisible (strip->ins2);
+        strip->addAndMakeVisible (strip->open2);
+        strip->addAndMakeVisible (strip->bypass2);
+        strip->addAndMakeVisible (strip->amt2);
+        strip->addAndMakeVisible (strip->aux1);
+        strip->addAndMakeVisible (strip->aux2);
         content.addAndMakeVisible (strip);
 
         strip->aLevel = std::make_unique<Strip::SliderAttachment> (apvts, voiceParam (voice, "level"), strip->level);
@@ -181,9 +220,11 @@ void MixerPage::resized()
     masterLabel.setBounds (master.removeFromLeft (64));
     masterLevel.setBounds (master.removeFromLeft (200).reduced (2, 4));
     masterIns1.setBounds (master.removeFromLeft (130).reduced (2, 4));
+    masterOpen1.setBounds (master.removeFromLeft (kOpenW).reduced (2, 4));
     masterBypass1.setBounds (master.removeFromLeft (32).reduced (2, 4));
     masterAmt1.setBounds (master.removeFromLeft (120).reduced (2, 4));
     masterIns2.setBounds (master.removeFromLeft (130).reduced (2, 4));
+    masterOpen2.setBounds (master.removeFromLeft (kOpenW).reduced (2, 4));
     masterBypass2.setBounds (master.removeFromLeft (32).reduced (2, 4));
     masterAmt2.setBounds (master.removeFromLeft (120).reduced (2, 4));
 
