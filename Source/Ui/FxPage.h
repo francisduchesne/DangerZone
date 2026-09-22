@@ -5,6 +5,8 @@
 namespace dz
 {
 
+// Aux engines and feel. Per-voice fader, pan, tune, inserts, and sends live
+// on the Mixer tab so each APVTS id has one control.
 class FxPage : public juce::Component
 {
 public:
@@ -13,13 +15,10 @@ public:
     void resized() override;
 
 private:
-    void showVoice (int voiceIndex);
     static void styleSlider (juce::Slider& slider);
 
     DangerZoneAudioProcessor& processor;
-    juce::ComboBox voiceBox;
-    juce::Label voiceLabel, tuneLabel, amt1Label, amt2Label;
-    juce::Slider tune, ins1Amount, ins2Amount;
+    juce::Label hint;
 
     juce::GroupComponent moverGroup { {}, "Aux 1  ·  Mover (delay)" };
     juce::GroupComponent spatGroup { {}, "Aux 2  ·  Spatializer (two reverbs)" };
@@ -33,7 +32,6 @@ private:
     using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
     using ButtonAttachment = juce::AudioProcessorValueTreeState::ButtonAttachment;
     using ComboAttachment = juce::AudioProcessorValueTreeState::ComboBoxAttachment;
-    std::unique_ptr<SliderAttachment> aTune, aAmt1, aAmt2;
     std::unique_ptr<SliderAttachment> aMoverTime, aMoverFb, aMoverRet;
     std::unique_ptr<SliderAttachment> aSizeA, aSizeB, aLevA, aLevB, aSpatRet;
     std::unique_ptr<SliderAttachment> aTiming, aPitch;

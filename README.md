@@ -62,8 +62,8 @@ Round-robin is the default (`variantMode`). Random is the other choice. Either w
 1. Open the Standalone, or load the VST3.
 2. Press **Play** on the Sequencer page. Stock Linn is a dry pattern: kick on the beat, snare on the backbeat, closed hat on the 8ths.
 3. Pads on Linn audition a voice. Mythical pads stay quiet until those folders have WAVs.
-4. Mixer: fader, pan, mute, solo, aux 1 (Mover), aux 2 (Spatializer), two insert pickers per voice, two insert pickers on the master.
-5. FX: Mover time / feedback / return, Spatializer engine A and engine B, insert amount for the selected voice.
+4. Mixer: one strip per Linn and Mythical voice — fader, pan, tune, mute, solo, two inserts (picker, bypass, amount), Aux 1 (Mover) and Aux 2 (Spatializer). Master level and two master inserts are on the same page.
+5. FX: Mover time / feedback / return, and Spatializer engine A and engine B.
 6. Presets: **Stock Linn**, **Processed**, and Save user preset.
 
 MIDI notes use the map in [docs/LINNDRUM_RESEARCH.md](docs/LINNDRUM_RESEARCH.md) (kick = 36, snare = 38, closed hat = 42, …).

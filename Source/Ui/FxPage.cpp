@@ -12,25 +12,13 @@ void FxPage::styleSlider (juce::Slider& slider)
 FxPage::FxPage (DangerZoneAudioProcessor& processorIn)
     : processor (processorIn)
 {
-    voiceLabel.setText ("Voice", juce::dontSendNotification);
-    tuneLabel.setText ("Tune", juce::dontSendNotification);
-    amt1Label.setText ("Insert 1 amount", juce::dontSendNotification);
-    amt2Label.setText ("Insert 2 amount", juce::dontSendNotification);
-    for (auto* label : { &voiceLabel, &tuneLabel, &amt1Label, &amt2Label })
-        addAndMakeVisible (*label);
+    hint.setText ("Each pad's fader, pan, tune, mute, solo, inserts, and aux sends are on the Mixer tab. "
+                  "Aux 1 is the Mover delay. Aux 2 is the Spatializer: engine A and engine B on that return.",
+                  juce::dontSendNotification);
+    hint.setJustificationType (juce::Justification::centredLeft);
+    addAndMakeVisible (hint);
 
-    for (int i = 0; i < kVoiceCount; ++i)
-        voiceBox.addItem (kVoices[i].label, i + 1);
-    voiceBox.setSelectedId (1, juce::dontSendNotification);
-    voiceBox.onChange = [this]
-    {
-        const int id = voiceBox.getSelectedId();
-        if (id > 0)
-            showVoice (id - 1);
-    };
-    addAndMakeVisible (voiceBox);
-
-    for (auto* slider : { &tune, &ins1Amount, &ins2Amount, &moverTime, &moverFeedback, &moverReturn,
+    for (auto* slider : { &moverTime, &moverFeedback, &moverReturn,
                           &spatSizeA, &spatSizeB, &spatLevelA, &spatLevelB, &spatReturn,
                           &timingJitter, &pitchJitter })
     {
@@ -73,23 +61,6 @@ FxPage::FxPage (DangerZoneAudioProcessor& processorIn)
     aPitch = std::make_unique<SliderAttachment> (apvts, "pitchJitterCents", pitchJitter);
     aVariant = std::make_unique<ComboAttachment> (apvts, "variantMode", variantMode);
     aMidi = std::make_unique<ButtonAttachment> (apvts, "midiClockSync", midiSync);
-
-    showVoice (0);
-}
-
-void FxPage::showVoice (int voiceIndex)
-{
-    if (voiceIndex < 0 || voiceIndex >= kVoiceCount)
-        return;
-
-    aTune.reset();
-    aAmt1.reset();
-    aAmt2.reset();
-
-    auto& apvts = processor.getApvts();
-    aTune = std::make_unique<SliderAttachment> (apvts, voiceParam (voiceIndex, "tune"), tune);
-    aAmt1 = std::make_unique<SliderAttachment> (apvts, voiceParam (voiceIndex, "ins1Amount"), ins1Amount);
-    aAmt2 = std::make_unique<SliderAttachment> (apvts, voiceParam (voiceIndex, "ins2Amount"), ins2Amount);
 }
 
 void FxPage::paint (juce::Graphics& g)
@@ -100,19 +71,7 @@ void FxPage::paint (juce::Graphics& g)
 void FxPage::resized()
 {
     auto area = getLocalBounds().reduced (10);
-    auto voiceRow = area.removeFromTop (28);
-    voiceLabel.setBounds (voiceRow.removeFromLeft (48));
-    voiceBox.setBounds (voiceRow.removeFromLeft (180));
-
-    auto tuneRow = area.removeFromTop (28);
-    tuneLabel.setBounds (tuneRow.removeFromLeft (48));
-    tune.setBounds (tuneRow.removeFromLeft (280));
-    auto amtRow = area.removeFromTop (28);
-    amt1Label.setBounds (amtRow.removeFromLeft (120));
-    ins1Amount.setBounds (amtRow.removeFromLeft (320));
-    auto amtRow2 = area.removeFromTop (28);
-    amt2Label.setBounds (amtRow2.removeFromLeft (120));
-    ins2Amount.setBounds (amtRow2.removeFromLeft (320));
+    hint.setBounds (area.removeFromTop (36));
 
     area.removeFromTop (8);
     auto moverArea = area.removeFromTop (150);

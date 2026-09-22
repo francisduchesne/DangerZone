@@ -104,8 +104,8 @@ Insert amount `0` is a bypass even if a module is selected. The stub DSP starts 
 - `Source/FvsInsert.cpp` — insert-slot stub DSP and the hosting boundary
 - `Source/FxChain.cpp` — aux Mover and the two-engine Spatializer
 - `Source/PluginProcessor.cpp` — the graph order above
-- Mixer tab — strips, insert pickers, master inserts
-- FX tab — Mover, both Spatializer engines, insert amount, tune, jitter
+- Mixer tab — one strip for every LinnDrum pad and every Mythical voice: fader, pan, tune, mute, solo, two inserts (picker, bypass, amount), Aux 1 and Aux 2. Master level plus two master inserts (picker, bypass, amount) sit above the list. Tune and insert amount used to be a single selected-voice control on the FX page, and master insert amount had no slider. They are on this tab now, one binding per parameter.
+- FX tab — Mover (time, feedback, return), both Spatializer engines, return, and jitter
 
 ## TODO
 
